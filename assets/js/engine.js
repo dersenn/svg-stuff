@@ -90,7 +90,7 @@ class SVG {
     return circle
   }
 
-  makeCircles(iA, r = 5, fill = this.def.fill, stroke = this.def.stroke, strokeW = this.def.strokeW) {
+  makeCircles(iA, r = 3, fill = '#f00', stroke = 'transparent', strokeW = this.def.strokeW) {
     let oA = []
     for (let c = 0; c < iA.length; c++) {
       let circle = document.createElementNS(this.ns, 'circle')

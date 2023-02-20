@@ -21,23 +21,13 @@ let svg = new SVG(setup)
 
 // SETUP
 
-const nCols = 4
-const nRows = 5
 
-let a = lerp(nVec(0,0), nVec(svg.w,0), 1/nCols)
-let b = lerp(nVec(0,svg.h), nVec(svg.w,svg.h), 1/nCols)
-
-let sPts = divLength(nVec(0,0), nVec(svg.w,0), 3)
-
-console.log(a, b)
 
 
 // DRAW/ANIMATE
 
-svg.makeCircles(sPts)
 
-svg.makeCircle(a, 5, '#f00', 'transparent')
-svg.makeCircle(b, 5, '#f00', 'transparent')
+
 
 
 // My Only Friend, The End.
