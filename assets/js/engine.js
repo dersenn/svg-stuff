@@ -281,7 +281,7 @@ class Path {
     return [new Vec(cp1x, cp1y), new Vec(cp2x, cp2y)]
   }
 
-  buildSpline(t = .4, close = this.close) {
+  buildSpline(t = .5, close = this.close) {
     // doesn't work if pts.length < 3 
     // could be avoided with case 1 && !pts.length-1 (somehow)
     let pts = this.pts
@@ -525,17 +525,18 @@ function deg(rad) {
 
 // Divide length between to points. Returns intermediary Points.
 // Random looks very end-heavy to me. not really random.
-function divLength(a, b, nSeg, t = 1/nSeg, incStartEnd = false, oA = []) {
-  if (incStartEnd) { oA.push(a)} 
+function divLength(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
+  if (incStartEnd) { oA.push(a) } 
   if (t === 'RND') {
     let rndVals = []
     for (let i = 0; i < nSeg-1; i++) {
       rndVals.push(rnd())
     }
     let rndSum = rndVals.reduce((acc, cur) => acc + cur, 0)
+    let tRnd = 0
     for (let i = 0; i < nSeg-1; i++) {
-      t = map(rndVals[i], 0, rndSum, 0, 1)
-      a = a.lerp(b, t)
+      tRnd = map(tRnd + rndVals[i], 0, rndSum, 0, 1)
+      a = a.lerp(b, tRnd)
       oA.push(a)
     }
   } else {
@@ -543,7 +544,7 @@ function divLength(a, b, nSeg, t = 1/nSeg, incStartEnd = false, oA = []) {
       oA.push(a.lerp(b, (i+1)*t))
     }
   }
-  if (incStartEnd) { oA.push(b)} 
+  if (incStartEnd) { oA.push(b) } 
   return oA
 }
 

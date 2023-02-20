@@ -10,9 +10,9 @@ if (useSeed) {
 }
 
 const setup = {
-      id: 'mySVG',
-      parent: document.body,
-      presAspect: 'none', // other values?
+  id: 'mySVG',
+  parent: document.body,
+  presAspect: 'none', // other values?
 }
 
 let svg = new SVG(setup)
@@ -21,45 +21,65 @@ let svg = new SVG(setup)
 
 // SETUP
 
-const nCols = 4
+const nCols = 5
 const nRows = 5
+const nSub = 10
 
-let tl = nVec(0, 0)
-let tr = nVec(svg.w, 0)
 
-// let Pts = divLength(tl, tr, nCols, 'RND', true)
-let Pts = []
+let pts = []
 
 for (let y = 0; y <= nRows; y++) {
-  let a = nVec(0, y * (svg.h / nRows))
-  let b = nVec(svg.w, y * (svg.h / nRows))
-  Pts.push(divLength(a, b, nCols, 'RND', true))
+  pts[y] = divLength(
+    nVec(0, y * (svg.h / nRows)), nVec(svg.w, y * (svg.h / nRows)),
+    nCols, true, 'RND'
+  )
+}
+
+for (const pt of pts) {
+  // console.log(pt)
+  // svg.makeCircles(pt)
 }
 
 let paths = []
 
-for (let c = 0; c <= nCols; c++) {
-  paths[c] = new Path()
-  for (let r = 0; r <= nRows; r++) {
-    paths[c].pts.push(Pts[r][c])
-  }
-}
-
-console.log(paths)
 
 // DRAW/ANIMATE
 
-// console.log(Pts)
-for (let p = 0; p < Pts.length; p++) {
-  svg.makeCircles(Pts[p])
+for (let x = 0; x <= nCols; x++) {
+  // paths[x] = new Path
+  // let p = paths[x]
+
+  for (let s = 0; s < nSub; s++) {
+    let p = new Path
+
+    for (let y = 0; y <= nRows; y++) {
+      switch (x) {
+        case nCols: {
+          break
+        }
+        default: {
+          p.pts.push(divLength(pts[y][x], pts[y][x + 1], nSub, true)[s])
+          // console.log(divLength(pts[y][x], pts[y][x + 1], nSub, true)[s])
+        }
+      }
+    }
+    // p.pts.push(pts[y][x])
+    paths.push(p)
+  }
 }
 
-
-for (let p = 0; p < paths.length; p++) {
-  svg.makePath(paths[p].buildPolygon())
+for (const path of paths) {
+  // console.log(pt)
+  svg.makePath(path.buildSpline(.3))
 }
 
+console.log(pts)
+// console.log(paths)
 
+let tpt = pts[3][4]
 
+console.log(tpt, svg.w)
+
+svg.makeCircle(tpt)
 
 // My Only Friend, The End.
