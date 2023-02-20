@@ -21,9 +21,9 @@ let svg = new SVG(setup)
 
 // SETUP
 
-const nCols = 5
-const nRows = 5
-const nSub = 10
+const nCols = rndInt(3, 20)
+const nRows = rndInt(3, 10)
+const nSub = rndInt(3,30)
 
 
 let sY = divLength(nVec(0, 0), nVec(0, svg.h), nRows, true, 'RND')
