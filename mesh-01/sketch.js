@@ -25,7 +25,6 @@ const nCols = 5
 const nRows = 5
 const nSub = 10
 
-
 let pts = []
 
 for (let y = 0; y <= nRows; y++) {
@@ -37,14 +36,7 @@ for (let y = 0; y <= nRows; y++) {
 
 let paths = []
 
-
-
-// DRAW/ANIMATE
-
 for (let x = 0; x <= nCols; x++) {
-  // paths[x] = new Path
-  // let p = paths[x]
-
   for (let s = 0; s < nSub; s++) {
     let p = new Path
 
@@ -55,27 +47,21 @@ for (let x = 0; x <= nCols; x++) {
         }
         default: {
           p.pts.push(divLength(pts[y][x], pts[y][x + 1], nSub, true)[s])
-          // console.log(divLength(pts[y][x], pts[y][x + 1], nSub, true)[s])
         }
       }
     }
-    // p.pts.push(pts[y][x])
     paths.push(p)
   }
 }
 
+
+
+// DRAW/ANIMATE
+
 for (const path of paths) {
-  // console.log(pt)
   svg.makePath(path.buildSpline())
 }
 
-// console.log(svg.w)
-console.log(pts[3])
-
-let tpt = pts[4][4]
-
-console.log('tpt: ' + tpt.x)
-// svg.makeCircle(tpt)
 
 
 
