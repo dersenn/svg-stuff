@@ -35,12 +35,8 @@ for (let y = 0; y <= nRows; y++) {
   )
 }
 
-for (const pt of pts) {
-  // console.log(pt)
-  // svg.makeCircles(pt)
-}
-
 let paths = []
+
 
 
 // DRAW/ANIMATE
@@ -70,16 +66,24 @@ for (let x = 0; x <= nCols; x++) {
 
 for (const path of paths) {
   // console.log(pt)
-  svg.makePath(path.buildSpline(.3))
+  svg.makePath(path.buildSpline())
 }
 
-console.log(pts)
-// console.log(paths)
+// console.log(svg.w)
+console.log(pts[3])
 
-let tpt = pts[3][4]
+let tpt = pts[4][4]
 
-console.log(tpt, svg.w)
+console.log('tpt: ' + tpt.x)
+// svg.makeCircle(tpt)
 
-svg.makeCircle(tpt)
+
+
+for (const pt of pts) {
+  // svg.makeCircles(pt)
+}
+
+
+
 
 // My Only Friend, The End.
