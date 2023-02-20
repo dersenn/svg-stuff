@@ -90,7 +90,7 @@ class SVG {
     return circle
   }
 
-  makeCircles(iA, r = 3, fill = '#f00', stroke = 'transparent', strokeW = this.def.strokeW) {
+  makeCircles(iA, r = 5, fill = '#f00', stroke = 'transparent', strokeW = this.def.strokeW) {
     let oA = []
     for (let c = 0; c < iA.length; c++) {
       let circle = document.createElementNS(this.ns, 'circle')
@@ -526,17 +526,22 @@ function deg(rad) {
 // Divide length between to points. Returns intermediary Points.
 // Random looks very end-heavy to me. not really random.
 function divLength(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
-  if (incStartEnd) { oA.push(a) } 
+  if (incStartEnd) { oA.push(a) }
+
   if (t === 'RND') {
     let rndVals = []
+
     for (let i = 0; i < nSeg; i++) {
       rndVals.push(rnd())
     }
     let rndSum = rndVals.reduce((acc, cur) => acc + cur, 0)
+
     let tRnd = 0
     for (let i = 0; i < nSeg-1; i++) {
-      tRnd = map(tRnd + rndVals[i], 0, rndSum, 0, 1)
-      a = a.lerp(b, tRnd)
+      tRnd += rndVals[i]
+      // t = map(tRnd, 0, rndSum, 0, 1)
+      t = map(tRnd, 0, nSeg, 0, 1)
+      a = a.lerp(b, t)
       oA.push(a)
     }
   } else {
@@ -544,6 +549,7 @@ function divLength(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
       oA.push(a.lerp(b, (i+1)*t))
     }
   }
+
   if (incStartEnd) { oA.push(b) } 
   return oA
 }

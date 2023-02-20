@@ -23,12 +23,18 @@ let svg = new SVG(setup)
 
 const nCols = rndInt(3, 20)
 const nRows = rndInt(3, 10)
-const nSub = rndInt(3,30)
+// const nSub = rndInt(3,30)
+
+// const nCols = 3
+// const nRows = 3
+// const nSub = 3
 
 
 let sY = divLength(nVec(0, 0), nVec(0, svg.h), nRows, true, 'RND')
 let eY = divLength(nVec(svg.w, 0), nVec(svg.w, svg.h), nRows, true, 'RND')
 
+// let sY = divLength(nVec(0, 0), nVec(0, svg.h), nRows, true)
+// let eY = divLength(nVec(svg.w, 0), nVec(svg.w, svg.h), nRows, true)
 
 
 
@@ -36,8 +42,11 @@ let pts = []
 
 for (let y = 0; y <= nRows; y++) {
   pts[y] = divLength(
-    sY[y], eY[y],
-    nCols, true, 'RND'
+    sY[y], 
+    eY[y],
+    nCols, 
+    true, 
+    'RND'
   )
 }
 
@@ -45,16 +54,20 @@ for (let y = 0; y <= nRows; y++) {
 let paths = []
 
 for (let x = 0; x <= nCols; x++) {
+
+  let nSub = 9 //rndInt(3, 9)
+
   for (let s = 0; s < nSub; s++) {
     let p = new Path
-
+    // p.col = `rgba(${rnd()*255}, ${255/(x+1)}, 0, 1)`
     for (let y = 0; y <= nRows; y++) {
       switch (x) {
         case nCols: {
           break
         }
         default: {
-          p.pts.push(divLength(pts[y][x], pts[y][x + 1], nSub, true)[s])
+          let thePt = divLength(pts[y][x], pts[y][x + 1], nSub, true)[s]
+          p.pts.push(thePt)
         }
       }
     }
@@ -67,14 +80,17 @@ for (let x = 0; x <= nCols; x++) {
 // DRAW/ANIMATE
 
 for (const path of paths) {
-  svg.makePath(path.buildSpline())
+  svg.makePath(
+    // path.buildPolygon(), 
+    path.buildSpline(), 
+    'transparent', 
+    // path.col
+    '#000'
+    )
 }
 
-
-
-
 for (const pt of pts) {
-  // svg.makeCircles(pt)
+  // svg.makeCircles(pt, 10)
 }
 
 
