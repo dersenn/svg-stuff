@@ -24,20 +24,42 @@ let svg = new SVG(setup)
 const nCols = 4
 const nRows = 5
 
-let a = lerp(nVec(0,0), nVec(svg.w,0), 1/nCols)
-let b = lerp(nVec(0,svg.h), nVec(svg.w,svg.h), 1/nCols)
+let tl = nVec(0, 0)
+let tr = nVec(svg.w, 0)
 
-let sPts = divLength(nVec(0,0), nVec(svg.w,0), 3)
+// let Pts = divLength(tl, tr, nCols, 'RND', true)
+let Pts = []
 
-console.log(sPts)
+for (let y = 0; y <= nRows; y++) {
+  let a = nVec(0, y * (svg.h / nRows))
+  let b = nVec(svg.w, y * (svg.h / nRows))
+  Pts.push(divLength(a, b, nCols, 'RND', true))
+}
 
+let paths = []
+
+for (let c = 0; c <= nCols; c++) {
+  paths[c] = new Path()
+  for (let r = 0; r <= nRows; r++) {
+    paths[c].pts.push(Pts[r][c])
+  }
+}
+
+console.log(paths)
 
 // DRAW/ANIMATE
 
-svg.makeCircles(sPts)
+// console.log(Pts)
+for (let p = 0; p < Pts.length; p++) {
+  svg.makeCircles(Pts[p])
+}
 
-// svg.makeCircle(a, 5, '#f00', 'transparent')
-// svg.makeCircle(b, 5, '#f00', 'transparent')
+
+for (let p = 0; p < paths.length; p++) {
+  svg.makePath(paths[p].buildPolygon())
+}
+
+
 
 
 // My Only Friend, The End.

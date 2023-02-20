@@ -145,7 +145,7 @@ class SVG {
     return rect
   }
 
-  makePath(d, fill = this.def.fill, stroke = this.def.stroke, strokeW = this.def.strokeW) {
+  makePath(d = 'M 0,0 ', fill = this.def.fill, stroke = this.def.stroke, strokeW = this.def.strokeW) {
     let path = document.createElementNS(this.ns, 'path')
     path.setAttribute('d', d)
     path.setAttribute('fill', fill)
@@ -525,19 +525,26 @@ function deg(rad) {
 
 // Divide length between to points. Returns intermediary Points.
 // Random looks very end-heavy to me. not really random.
-function divLength(a, b, nSeg, t = 1/nSeg, outA = []) {
+function divLength(a, b, nSeg, t = 1/nSeg, incStartEnd = false, oA = []) {
+  if (incStartEnd) { oA.push(a)} 
   if (t === 'RND') {
+    let rndVals = []
     for (let i = 0; i < nSeg-1; i++) {
-      t = rnd()
+      rndVals.push(rnd())
+    }
+    let rndSum = rndVals.reduce((acc, cur) => acc + cur, 0)
+    for (let i = 0; i < nSeg-1; i++) {
+      t = map(rndVals[i], 0, rndSum, 0, 1)
       a = a.lerp(b, t)
-      outA.push(a)
+      oA.push(a)
     }
   } else {
     for (let i = 0; i < nSeg-1; i++) {
-      outA.push(a.lerp(b, (i+1)*t))
+      oA.push(a.lerp(b, (i+1)*t))
     }
   }
-  return outA
+  if (incStartEnd) { oA.push(b)} 
+  return oA
 }
 
 function shuffle(iA) {
