@@ -533,7 +533,6 @@ function divLength(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
       rndVals.push(rnd())
     }
     let rndSum = rndVals.reduce((acc, cur) => acc + cur, 0)
-    console.log(rndVals, nSeg)    
     let tRnd = 0
     for (let i = 0; i < nSeg-1; i++) {
       tRnd = map(tRnd + rndVals[i], 0, rndSum, 0, 1)

@@ -34,6 +34,9 @@ for (let y = 0; y <= nRows; y++) {
   )
 }
 
+let startYs = divLength()
+
+
 let paths = []
 
 for (let x = 0; x <= nCols; x++) {
