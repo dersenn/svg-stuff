@@ -78,7 +78,7 @@ class SVG {
     return line
   }
 
-  makeCircle(c, r, fill = this.def.fill, stroke = this.def.stroke, strokeW = this.def.strokeW) {
+  makeCircle(c, r = 5, fill = this.def.fill, stroke = this.def.stroke, strokeW = this.def.strokeW) {
     let circle = document.createElementNS(this.ns, 'circle')
     circle.setAttribute('cx', c.x)
     circle.setAttribute('cy', c.y)
@@ -88,6 +88,22 @@ class SVG {
     circle.setAttribute('stroke-width', strokeW)
     this.stage.append(circle)
     return circle
+  }
+
+  makeCircles(iA, r = 5, fill = this.def.fill, stroke = this.def.stroke, strokeW = this.def.strokeW) {
+    let oA = []
+    for (let c = 0; c < iA.length; c++) {
+      let circle = document.createElementNS(this.ns, 'circle')
+      circle.setAttribute('cx', iA[c].x)
+      circle.setAttribute('cy', iA[c].y)
+      circle.setAttribute('r', r)
+      circle.setAttribute('fill', fill)
+      circle.setAttribute('stroke', stroke)
+      circle.setAttribute('stroke-width', strokeW)
+      this.stage.append(circle)
+      oA.push(circle)
+    }
+    return oA
   }
 
   makeEllipse(c, rx, ry, fill = this.def.fill, stroke = this.def.stroke, strokeW = this.def.strokeW) {
