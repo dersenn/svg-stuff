@@ -21,9 +21,9 @@ let svg = new SVG(setup)
 
 // SETUP
 
-const nCols = rndInt(3, 20)
-const nRows = rndInt(3, 10)
-// const nSub = rndInt(3,30)
+const nCols = 10 //rndInt(3, 20)
+const nRows = 3 //rndInt(3, 10)
+const nSub = 1 //rndInt(3,30)
 
 // const nCols = 3
 // const nRows = 3
@@ -35,6 +35,9 @@ let eY = divLength(nVec(svg.w, 0), nVec(svg.w, svg.h), nRows, true, 'RND')
 
 // let sY = divLength(nVec(0, 0), nVec(0, svg.h), nRows, true)
 // let eY = divLength(nVec(svg.w, 0), nVec(svg.w, svg.h), nRows, true)
+
+
+console.log(rndColRGB())
 
 
 
@@ -53,9 +56,7 @@ for (let y = 0; y <= nRows; y++) {
 
 let paths = []
 
-for (let x = 0; x <= nCols; x++) {
-
-  let nSub = 9 //rndInt(3, 9)
+for (let x = 0; x < nCols; x++) {
 
   for (let s = 0; s < nSub; s++) {
     let p = new Path
@@ -79,6 +80,7 @@ for (let x = 0; x <= nCols; x++) {
 
 // DRAW/ANIMATE
 
+
 for (const path of paths) {
   svg.makePath(
     // path.buildPolygon(), 
@@ -90,7 +92,7 @@ for (const path of paths) {
 }
 
 for (const pt of pts) {
-  // svg.makeCircles(pt, 10)
+  svg.makeCircles(pt, 5, rndColRGB())
 }
 
 

@@ -93,14 +93,7 @@ class SVG {
   makeCircles(iA, r = 5, fill = '#f00', stroke = 'transparent', strokeW = this.def.strokeW) {
     let oA = []
     for (let c = 0; c < iA.length; c++) {
-      let circle = document.createElementNS(this.ns, 'circle')
-      circle.setAttribute('cx', iA[c].x)
-      circle.setAttribute('cy', iA[c].y)
-      circle.setAttribute('r', r)
-      circle.setAttribute('fill', fill)
-      circle.setAttribute('stroke', stroke)
-      circle.setAttribute('stroke-width', strokeW)
-      this.stage.append(circle)
+      let circle = svg.makeCircle(iA[c], r, fill, stroke, strokeW)
       oA.push(circle)
     }
     return oA
@@ -507,6 +500,13 @@ function coinToss(chance = 50) {
 }
 
 
+/////// COLORS
+
+function rndColRGB(r = rndInt(0,255), g = rndInt(0,255), b = rndInt(0,255), a = 1) {
+  return `rgba(${r},${g},${b},${a})`
+}
+
+
 
 /////// UTILITY FUNCTIONS.
 
@@ -554,8 +554,14 @@ function divLength(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
   return oA
 }
 
+function divLengthNew(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
+
+}
+
+
+
 function shuffle(iA) {
-  oA = Array.from(iA) // Copy Array. Only one dimensional arrays!
+  let oA = Array.from(iA) // Copy Array. Only one dimensional arrays!
   for (let i = oA.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [oA[i], oA[j]] = [oA[j], oA[i]];
