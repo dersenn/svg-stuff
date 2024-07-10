@@ -22,8 +22,6 @@ let svg = new SVG(setup)
 // SETUP
 
 
-
-
 // DRAW/ANIMATE
 
 
