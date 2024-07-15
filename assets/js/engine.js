@@ -344,41 +344,41 @@ class Vec {
         zn = this.z / this.m
     return new Vec(xn, yn, zn)
   }
-  // ov = other Vec
-  add(ov) {
-    let xn = this.x + ov.x,
-        yn = this.y + ov.y,
-        zn = this.z + ov.z
+  // oV = other Vec
+  add(oV) {
+    let xn = this.x + oV.x,
+        yn = this.y + oV.y,
+        zn = this.z + oV.z
     return new Vec(xn, yn, zn)
   }
-  sub(ov) {
-    let xn = this.x - ov.x, 
-        yn = this.y - ov.y,
-        zn = this.z - ov.z
+  sub(oV) {
+    let xn = this.x - oV.x, 
+        yn = this.y - oV.y,
+        zn = this.z - oV.z
     return new Vec(xn, yn, zn)
   }
-  cross(ov) {
-    let xn = this.y * ov.z - this.z * ov.y,
-        yn = this.z * ov.x - this.x * ov.z,
-        zn = this.x * ov.y - this.y * ov.x
+  cross(oV) {
+    let xn = this.y * oV.z - this.z * oV.y,
+        yn = this.z * oV.x - this.x * oV.z,
+        zn = this.x * oV.y - this.y * oV.x
     return new Vec(xn, yn, zn)
   }
-  dot(ov) {
-    return this.x * ov.x + this.y * ov.y + this.z * ov.z
+  dot(oV) {
+    return this.x * oV.x + this.y * oV.y + this.z * oV.z
   }
-  ang(ov) {
-    return Math.acos( this.norm().dot(ov.norm()) / (this.norm().m * ov.norm().m) )
+  ang(oV) {
+    return Math.acos( this.norm().dot(oV.norm()) / (this.norm().m * oV.norm().m) )
   }
-  lerp(ov, t) {
-    let xn = (1 - t) * this.x + ov.x * t,
-        yn = (1 - t) * this.y + ov.y * t,
-        zn = (1 - t) * this.z + ov.z * t
+  lerp(oV, t) {
+    let xn = (1 - t) * this.x + oV.x * t,
+        yn = (1 - t) * this.y + oV.y * t,
+        zn = (1 - t) * this.z + oV.z * t
     return new Vec(xn, yn, zn)
   }
-  mid(ov) {
-    let xn = (this.x + ov.x) / 2,
-        yn = (this.y + ov.y) / 2,
-        zn = (this.z + ov.z) / 2
+  mid(oV) {
+    let xn = (this.x + oV.x) / 2,
+        yn = (this.y + oV.y) / 2,
+        zn = (this.z + oV.z) / 2
     return new Vec(xn, yn, zn)
   }
 }
@@ -425,7 +425,7 @@ function ang(a, b) {
 
 class Hash {
   constructor() {
-    this.alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ'
+    this.alphabet = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ'
     this.init()
     this.hashTrunc = this.hash.slice(2);
     this.regex = new RegExp('.{' + ((this.hashTrunc.length / 4) | 0) + '}', 'g');
@@ -523,34 +523,72 @@ function deg(rad) {
   return rad / (Math.PI / 180)
 }
 
-// Divide length between to points. Returns intermediary Points.
+// Divide length between two points. Returns intermediary Points.
 // Random looks very end-heavy to me. not really random.
-function divLength(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
-  if (incStartEnd) { oA.push(a) }
+// function divLength(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
+//   if (incStartEnd) { oA.push(a) }
+
+//   if (t === 'RND') {
+//     let rndVals = []
+
+//     for (let i = 0; i < nSeg; i++) {
+//       rndVals.push(rnd())
+//     }
+//     let rndSum = rndVals.reduce((acc, cur) => acc + cur, 0)
+
+//     let tRnd = 0
+//     for (let i = 0; i < nSeg-1; i++) {
+//       tRnd += rndVals[i]
+//       // t = map(tRnd, 0, rndSum, 0, 1)
+//       t = map(tRnd, 0, nSeg, 0, 1)
+//       a = a.lerp(b, t)
+//       oA.push(a)
+//     }
+//   } else {
+//     for (let i = 0; i < nSeg-1; i++) {
+//       oA.push(a.lerp(b, (i+1)*t))
+//     }
+//   }
+
+//   if (incStartEnd) { oA.push(b) } 
+//   return oA
+// }
+
+
+// With a little help from my friend. 10-07-2024
+function divLength(a, b, nSeg, incStartEnd = false, t = 1 / nSeg, oA = []) {
+  if (incStartEnd) {
+    oA.push(a)
+  }
 
   if (t === 'RND') {
     let rndVals = []
 
-    for (let i = 0; i < nSeg; i++) {
+    // Generate random values
+    for (let i = 0; i < nSeg - 1; i++) {
       rndVals.push(rnd())
     }
-    let rndSum = rndVals.reduce((acc, cur) => acc + cur, 0)
 
-    let tRnd = 0
-    for (let i = 0; i < nSeg-1; i++) {
-      tRnd += rndVals[i]
-      // t = map(tRnd, 0, rndSum, 0, 1)
-      t = map(tRnd, 0, nSeg, 0, 1)
-      a = a.lerp(b, t)
-      oA.push(a)
+    // Sort the random values
+    rndVals.sort((x, y) => x - y)
+
+    // Interpolate points based on sorted random values
+    for (let i = 0; i < nSeg - 1; i++) {
+      let t = rndVals[i]
+      let newPoint = a.lerp(b, t)
+      oA.push(newPoint)
     }
   } else {
-    for (let i = 0; i < nSeg-1; i++) {
-      oA.push(a.lerp(b, (i+1)*t))
+    // Linear interpolation
+    for (let i = 0; i < nSeg - 1; i++) {
+      oA.push(a.lerp(b, (i + 1) * t))
     }
   }
 
-  if (incStartEnd) { oA.push(b) } 
+  if (incStartEnd) {
+    oA.push(b)
+  }
+
   return oA
 }
 

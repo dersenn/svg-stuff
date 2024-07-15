@@ -21,13 +21,9 @@ let svg = new SVG(setup)
 
 // SETUP
 
-const nCols = 10 //rndInt(3, 20)
-const nRows = 3 //rndInt(3, 10)
+const nCols = 20 //rndInt(3, 20)
+const nRows = 10 //rndInt(3, 10)
 const nSub = 1 //rndInt(3,30)
-
-// const nCols = 3
-// const nRows = 3
-// const nSub = 3
 
 
 let sY = divLength(nVec(0, 0), nVec(0, svg.h), nRows, true, 'RND')
@@ -38,7 +34,6 @@ let eY = divLength(nVec(svg.w, 0), nVec(svg.w, svg.h), nRows, true, 'RND')
 
 
 console.log(rndColRGB())
-
 
 
 let pts = []
