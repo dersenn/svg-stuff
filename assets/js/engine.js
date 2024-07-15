@@ -32,8 +32,8 @@ class SVG {
     // But maybe this doesn't make sense.
     this.def = {
       fill: 'transparent',
-      stroke: '#000',
-      strokeW: 1
+      stroke: 'transparent',
+      strokeW: 0
     }
 
     // initialize and push to dom on creation.
@@ -125,7 +125,7 @@ class SVG {
     return rect
   }
 
-  makeRectAB(a, b, fill = 'transparent', stroke = this.def.stroke, strokeW = this.def.strokeW) {
+  makeRectPts(a, b, fill = 'transparent', stroke = this.def.stroke, strokeW = this.def.strokeW) {
     let rect = document.createElementNS(this.ns, 'rect')
     rect.setAttribute('x', a.x)
     rect.setAttribute('y', a.y)
@@ -502,10 +502,158 @@ function coinToss(chance = 50) {
 
 /////// COLORS
 
-function rndColRGB(r = rndInt(0,255), g = rndInt(0,255), b = rndInt(0,255), a = 1) {
-  return `rgba(${r},${g},${b},${a})`
+
+class Color {
+  constructor(v1 = 0, v2 = 0, v3 = 0, a = 1, format = 'rgb') {
+    if (format === 'rgb') {
+      this.fromRGB(v1, v2, v3, a)
+    } else if (format === 'hsl') {
+      this.fromHSL(v1, v2, v3, a)
+    } else {
+      throw new Error('Unsupported format. Use "rgb" or "hsl".')
+    }
+  }
+
+  static fromString(str) {
+    if (str.startsWith('rgba')) {
+      const rgba = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+      return new Color(parseInt(rgba[1]), parseInt(rgba[2]), parseInt(rgba[3]), parseFloat(rgba[4]), 'rgb')
+    } else if (str.startsWith('rgb')) {
+      const rgb = str.match(/rgb?\((\d+),\s*(\d+),\s*(\d+)\)/);
+      return new Color(parseInt(rgb[1]), parseInt(rgb[2]), parseInt(rgb[3]), 1, 'rgb')
+    } else if (str.startsWith('hsla')) {
+      const hsla = str.match(/hsla?\((\d+),\s*([\d.]+)%,\s*([\d.]+)%,\s*([\d.]+)\)/)
+      return new Color(parseInt(hsla[1]), parseFloat(hsla[2]), parseFloat(hsla[3]), parseFloat(hsla[4]), 'hsl')
+    } else if (str.startsWith('hsl')) {
+      const hsl = str.match(/hsl?\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/);
+      return new Color(parseInt(hsl[1]), parseFloat(hsl[2]), parseFloat(hsl[3]), 1, 'hsl')
+    } else {
+      throw new Error('Unsupported color string format.')
+    }
+  }
+
+  fromRGB(r = 0, g = 0, b = 0, a = 1) {
+    this.r = r
+    this.g = g
+    this.b = b
+    this.a = a
+    this.updateRGBA()
+    this.updateHSL()
+  }
+
+  fromHSL(h, s, l, a = 1) {
+    this.h = h
+    this.s = s
+    this.l = l
+    this.a = a
+    this.updateHSLA()
+    this.updateRGB()
+  }
+
+  updateRGBA() {
+    this.rgba = `rgba(${this.r},${this.g},${this.b},${this.a})`
+  }
+
+  updateHSLA() {
+    this.hsla = `hsla(${this.h},${this.s}%,${this.l}%,${this.a})`
+  }
+
+  updateRGB() {
+    const s = this.s / 100
+    const l = this.l / 100
+
+    const c = (1 - Math.abs(2 * l - 1)) * s
+    const x = c * (1 - Math.abs((this.h / 60) % 2 - 1))
+    const m = l - c / 2
+
+    let [r, g, b] = (() => {
+      if (0 <= this.h && this.h < 60) {
+        return [c, x, 0]
+      } else if (60 <= this.h && this.h < 120) {
+        return [x, c, 0]
+      } else if (120 <= this.h && this.h < 180) {
+        return [0, c, x]
+      } else if (180 <= this.h && this.h < 240) {
+        return [0, x, c]
+      } else if (240 <= this.h && this.h < 300) {
+        return [x, 0, c]
+      } else {
+        return [c, 0, x]
+      }
+    })()
+
+    this.r = Math.round((r + m) * 255)
+    this.g = Math.round((g + m) * 255)
+    this.b = Math.round((b + m) * 255)
+    this.updateRGBA()
+  }
+
+  updateHSL() {
+    const r = this.r / 255, g = this.g / 255, b = this.b / 255
+    const max = Math.max(r, g, b), min = Math.min(r, g, b)
+    let h, s, l = (max + min) / 2
+
+    if (max === min) {
+      h = s = 0 // achromatic
+    } else {
+      const d = max - min
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break
+        case g: h = (b - r) / d + 2; break
+        case b: h = (r - g) / d + 4; break
+      }
+      h *= 60
+    }
+
+    this.h = h
+    this.s = s * 100
+    this.l = l * 100
+    this.updateHSLA()
+  }
+
+  toHSLArr() {
+    return [this.h, this.s, this.l, this.a]
+  }
+
+  toRGBArr() {
+    return [this.r, this.g, this.b, this.a]
+  }
 }
 
+function rndColRGB(r = rndInt(0,255), g = rndInt(0,255), b = rndInt(0,255), a = 1) {
+  return new Color(r, g, b, a, 'rgb')
+}
+
+
+// getRGBAValues function to extract the individual RGBA values from an rgba or rgb color string
+function getColorValues(color) {
+  // Regular expressions for rgba, rgb, hsla, and hsl formats
+  const rgbaRegex = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d*\.?\d+))?\)$/
+  const hslaRegex = /^hsla?\((\d+),\s*(\d+)%?,\s*(\d+)%?(?:,\s*(\d*\.?\d+))?\)$/
+
+  let match
+
+  if ((match = color.match(rgbaRegex))) {
+    // Extract the rgba values
+    const r = parseInt(match[1], 10)
+    const g = parseInt(match[2], 10)
+    const b = parseInt(match[3], 10)
+    const a = match[4] !== undefined ? parseFloat(match[4]) : 1 // Default alpha to 1 if not present
+
+    return { format: 'rgba', r, g, b, a }
+  } else if ((match = color.match(hslaRegex))) {
+    // Extract the hsla values
+    const h = parseInt(match[1], 10)
+    const s = parseInt(match[2], 10)
+    const l = parseInt(match[3], 10)
+    const a = match[4] !== undefined ? parseFloat(match[4]) : 1 // Default alpha to 1 if not present
+
+    return { format: 'hsla', h, s, l, a }
+  } else {
+    throw new Error('Invalid color format. Expected rgba, rgb, hsla, or hsl format.')
+  }
+}
 
 
 /////// UTILITY FUNCTIONS.
@@ -524,37 +672,6 @@ function deg(rad) {
 }
 
 // Divide length between two points. Returns intermediary Points.
-// Random looks very end-heavy to me. not really random.
-// function divLength(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
-//   if (incStartEnd) { oA.push(a) }
-
-//   if (t === 'RND') {
-//     let rndVals = []
-
-//     for (let i = 0; i < nSeg; i++) {
-//       rndVals.push(rnd())
-//     }
-//     let rndSum = rndVals.reduce((acc, cur) => acc + cur, 0)
-
-//     let tRnd = 0
-//     for (let i = 0; i < nSeg-1; i++) {
-//       tRnd += rndVals[i]
-//       // t = map(tRnd, 0, rndSum, 0, 1)
-//       t = map(tRnd, 0, nSeg, 0, 1)
-//       a = a.lerp(b, t)
-//       oA.push(a)
-//     }
-//   } else {
-//     for (let i = 0; i < nSeg-1; i++) {
-//       oA.push(a.lerp(b, (i+1)*t))
-//     }
-//   }
-
-//   if (incStartEnd) { oA.push(b) } 
-//   return oA
-// }
-
-
 // With a little help from my friend. 10-07-2024
 function divLength(a, b, nSeg, incStartEnd = false, t = 1 / nSeg, oA = []) {
   if (incStartEnd) {
@@ -591,12 +708,6 @@ function divLength(a, b, nSeg, incStartEnd = false, t = 1 / nSeg, oA = []) {
 
   return oA
 }
-
-function divLengthNew(a, b, nSeg, incStartEnd = false, t = 1/nSeg, oA = []) {
-
-}
-
-
 
 function shuffle(iA) {
   let oA = Array.from(iA) // Copy Array. Only one dimensional arrays!
