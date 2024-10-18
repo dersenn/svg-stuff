@@ -419,6 +419,13 @@ function ang(a, b) {
   return Math.acos( dot(a.norm(), b.norm()) / (a.norm().m * b.norm().m) )
 }
 
+function slope(a, b) {
+  return (b.y - a.y) / (b.x - a.x)
+}
+
+function perpSlope(a, b) {
+  return -1 / slope(a, b)
+}
 
 
 /////// RANDOM & SEED.
@@ -658,7 +665,7 @@ function getColorValues(color) {
 
 /////// UTILITY FUNCTIONS.
 
-function map(val, minIn, maxIn, minOut, maxOut) {
+function mapValues(val, minIn, maxIn, minOut, maxOut) {
   val = (val - minIn) / (maxIn - minIn)
   return minOut + val * (maxOut - minOut)
 }
