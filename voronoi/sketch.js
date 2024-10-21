@@ -124,7 +124,7 @@ function findTriangleNeighbors(triangles) {
   // Now build the neighbor relationships
   let neighbors = Array(triangles.length).fill().map(() => [])
 
-  console.log(neighbors)
+  console.log("neighbors: " + neighbors)
 
   for (let [edge, tris] of edgeMap) {
     if (tris.length == 2) { // Two triangles share this edge
@@ -136,10 +136,10 @@ function findTriangleNeighbors(triangles) {
   return neighbors
 }
 
+
+
 let delaunay = delaunayTriangulation(pts)
-
 console.log(findTriangleNeighbors(delaunay))
-
 
 // DRAW/ANIMATE
 

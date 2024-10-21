@@ -1,10 +1,12 @@
-// 20-02-2023
-// Preset 01 — ex v3 in svg-engine..
+// 21-10-2024
+// Modified Version. Should push this back to the boilerplate and engine repo.
+
 
 // To Do:
+// — nice to have: a way to easily name and label elements. e.g. Point "A", "B", "C" etc. . Mostly useful for development and maths debugging.
 // — nice to have: working defaults.
 // — nice to have: add shortcuts to setAttribute... e.g. strokeCap(5)
-// — nice to have: color object or methods. and gradients.
+// — nice to have: color object or methods. and gradients. // done, but needs refinement.
 // — nice to have: modularize???
 // — maybe get rid of z-coordinates... it's 2d after all. but maybe useful for noise etc. (?)
 // — <g> (group). but needs a bit of thinking re: parent.
@@ -508,6 +510,9 @@ function coinToss(chance = 50) {
 
 
 /////// COLORS
+/////// Built with Chat's help. 10-07-2024.
+/////// Seems a bit overly complicated.
+/////// Needs refinement, so e.g. rgba strings get updated automatically if a value (r, g, b or a) is changed.
 
 
 class Color {
@@ -694,6 +699,7 @@ function divLength(a, b, nSeg, incStartEnd = false, t = 1 / nSeg, oA = []) {
     }
 
     // Sort the random values
+    // Don't get why they need to be sorted, but it works.
     rndVals.sort((x, y) => x - y)
 
     // Interpolate points based on sorted random values
