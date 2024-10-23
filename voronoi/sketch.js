@@ -1,4 +1,10 @@
 
+// 22-10-24
+// Found a few resources on future blob/liquid simulation.
+// https://charlottedann.com/article/soft-blob-physics
+// https://codepen.io/ksenia-k/pen/RwXVMMY // Codepen. Shader based.
+
+
 // INIT
 
 let useSeed = true
@@ -21,7 +27,7 @@ let svg = new SVG(setup)
 // SETUP
 
 let pts = []
-let nPts = 7
+let nPts = 20
 
 for (let i = 0; i < nPts; i++) {
   let x = rnd() * svg.w
@@ -29,6 +35,8 @@ for (let i = 0; i < nPts; i++) {
   pts.push(new Vec(x, y))
 }
 
+
+// FUNCTIONS
 
 // Find all possible triangles
 function allTriangles(iA) {
@@ -94,6 +102,9 @@ function delaunayTriangulation(pts) {
   return delaunayTriangles
 }
 
+
+// Next part not working yet.
+
 function findTriangleNeighbors(triangles) {
   let edgeMap = new Map() // Map to store edges and corresponding triangles
 
@@ -138,8 +149,29 @@ function findTriangleNeighbors(triangles) {
 
 
 
+
+
+
+// BUILD
+
+
 let delaunay = delaunayTriangulation(pts)
 console.log(findTriangleNeighbors(delaunay))
+
+
+// ADDED A GRID CLASS FOR FUN (22.10.24)
+let grid = new Mesh(3, 10, 20)
+console.log(grid.cells[3])
+
+for (let i = 0; i < grid.cells.length; i++) {
+  svg.makeCircle(grid.cells[i].tl, 5, 'rgba(0, 0, 255, 1)')
+  svg.makeCircle(grid.cells[i].tr, 5, 'rgba(0, 0, 255, 1)')
+  svg.makeCircle(grid.cells[i].bl, 5, 'rgba(0, 0, 255, 1)')
+  svg.makeCircle(grid.cells[i].br, 5, 'rgba(0, 0, 255, 1)')
+  svg.makeCircle(grid.cells[i].c, 5, 'rgba(0, 255, 0, 1)')
+}
+
+
 
 // DRAW/ANIMATE
 

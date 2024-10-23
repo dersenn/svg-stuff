@@ -731,7 +731,42 @@ function shuffle(iA) {
   return oA;
 }
 
-
+// Helper function to create a grid of points
+// Called it mesh, for future upgrades. e.g. non-rectangular grids.
+// A grid would just be a quite regular mesh.
+class Mesh {
+  constructor(nCols, nRows, padding = 0, w = svg.w, h = svg.h) {
+    this.nCols = nCols
+    this.nRows = nRows
+    this.padding = padding
+    this.zero = { x: padding, y: padding }
+    this.w = w - padding * 2
+    this.h = h - padding * 2
+    this.cellW = this.w / this.nCols
+    this.cellH = this.h / this.nRows
+    this.init()
+  }
+  init() {
+    this.cells = []
+    for (let i = 0; i < this.nCols; i++) {
+      for (let j = 0; j < this.nRows; j++) {
+        let x = this.zero.x + i * this.cellW
+        let y = this.zero.y + j * this.cellH
+        let cell = {
+          index: i + j * this.nCols,
+          col: i,
+          row: j,
+          tl: new Vec(x, y),
+          tr: new Vec(x + this.cellW, y),
+          br: new Vec(x + this.cellW, y + this.cellH),
+          bl: new Vec(x, y + this.cellH),
+          c: new Vec(x + this.cellW / 2, y + this.cellH / 2)
+        }
+        this.cells.push(cell)
+      }
+    }
+  }
+}
 
 
 /////// INTERACTION, KEYS & FILEHANDLING
